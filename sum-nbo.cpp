@@ -9,15 +9,22 @@ FILE* fp = fopen(argv[1], "r");
 FILE* fp1 = fopen(argv[2], "r");
 FILE* fp2 = fopen(argv[3], "r");
     
-    if (fp == NULL){
+    if (!fp || !fp1 || !fp2){
             perror("file open fail.");
-            return 1;
+	    if (fp) fclose(fp);
+	    if (fp1) fclose(fp1);
+	    if (fp2) fclose(fp2);
+            return 0;
     }
 
-    if (fread(&n, 1, 4, fp) != 4){
+    if (fread(&n, 1, 4, fp) != 4 ||
+	fread(&n1, 1, 4, fp1) != 4 ||
+	fread(&n2, 1, 4, fp2)	!= 4){
             perror("file read fail.");
             fclose(fp);
-            return 0;
+	    fclose(fp1);
+	    fclose(fp2);
+            return 1;	
     }
 
     fread(&n, 1, 4, fp);
